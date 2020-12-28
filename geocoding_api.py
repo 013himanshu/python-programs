@@ -1,0 +1,31 @@
+import urllib.request, urllib.parse, urllib.error
+import json
+
+service_url = "https://maps.googleapis.com/maps/api/geocode/json?"
+
+while True:
+    address = input("Enter Location: ")
+    if len(address) < 1: break
+
+    url = service_url + urllib.parse.urlencode({'address': address})
+    print('Retrieving:', url)
+    uh = urllib.request.urlopen(url).read().decode()
+    print('Retrieved:', len(uh), 'characters')
+
+    try:
+        js = json.loads(uh)
+    except:
+        js = None
+
+    if not js or 'status' not in js or js['status'] != 'OK':
+        print('=== Failure To Retrieve ===')
+        print(uh)
+        continue
+
+    lat = js["results"][0]["geometry"]["location"]["lat"]
+    lng = js["results"][0]["geometry"]["location"]["lng"]
+    print("Latitude:", lat)
+    print("Longitude:", lng)
+    location = js["results"][o]["formatted_address"]
+    print(location)
+    break
